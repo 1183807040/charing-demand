@@ -15,22 +15,25 @@ device = torch.device("cuda:0" if use_cuda and torch.cuda.is_available() else "c
 fn.set_seed(seed=2024, flag=True)
 
 # hyper params
-model_name = 'HSSTM'  # TODO: NI
+model_name = 'HSsSTM'  # TODO: NI
 seq_l = 12
 pre_l = 6
 bs = 64
 # p_epoch = 200
-n_epoch = 2
+n_epoch = 4
 # law_list = np.array([-1.48, -0.74])  # price elasticities of demand for EV charging. Recommend: up to 5 elements.
 is_train = True
 mode = 'completed'  # 'simplified' or 'completed'
 # is_pre_train = False
 
 # input data
-vol, prc, adj, col, dis, cap, time, inf, occ, day, fri, hor, wea = fn.read_dataset()
+vol, prc, adj, col, dis, cap, time, inf, occ, day, fri, hor, wea, fuc = fn.read_dataset()
 adj_dense = torch.Tensor(adj)
 adj_dense_cuda = adj_dense.to(device)
 adj_sparse = adj_dense.to_sparse_coo().to(device)
+
+adj_function = torch.Tensor(fuc)
+adj_function_cuda = adj_function.to(device)
 
 # dataset division
 train_volumn, valid_volumn, test_volumn = fn.division(vol, train_rate=0.6, valid_rate=0.2, test_rate=0.2)
@@ -58,7 +61,7 @@ test_loader = DataLoader(test_dataset, batch_size=len(test_volumn), shuffle=Fals
 # model = baselines.LSTM(seq_l, 2, node=247)
 # model = baselines.LstmGcn(seq_l, 2, adj_dense_cuda)
 # model = baselines.LstmGat(seq_l, 7, adj_dense_cuda, adj_sparse)
-model = baselines.HSTGCN(seq_l, 2, adj_dense_cuda, adj_dense_cuda)
+model = baselines.HSTGCN(seq_l, 2, adj_dense_cuda, adj_function_cuda)
 optimizer = torch.optim.Adam(model.parameters(), weight_decay=0.00001)
 loss_function = torch.nn.MSELoss()
 valid_loss = 100000

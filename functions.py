@@ -19,6 +19,7 @@ def read_dataset():
     fri = pd.read_csv('datasets/new_data/Fri_Sat.csv', index_col=0, header=0)
     hor = pd.read_csv('datasets/new_data/hour.csv', index_col=0, header=0)
     wea = pd.read_csv('datasets/new_data/wea.csv', index_col=0, header=0)
+    fuc = pd.read_csv('datasets/new_data/A_function.csv', index_col=0, header=0)
 
     col = vol.columns
     vol = np.array(vol, dtype=float)
@@ -32,9 +33,10 @@ def read_dataset():
     fri = np.array(fri, dtype=float)
     hor = np.array(hor, dtype=float)
     wea = np.array(wea, dtype=float)
+    fuc = np.array(fuc, dtype=float)
     time = pd.to_datetime(time, dayfirst=True)
 
-    return vol, prc, adj, col, dis, cap, time, inf, occ, day, fri, hor, wea
+    return vol, prc, adj, col, dis, cap, time, inf, occ, day, fri, hor, wea, fuc
 
 # ---------data transform-----------
 def create_rnn_data(dataset, lookback, predict_time):

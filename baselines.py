@@ -217,14 +217,17 @@ class HSTGCN(nn.Module):
         self.act = nn.ReLU()
         self.dropout = nn.Dropout(p=0.5)
 
+        # 地理邻接图
         # calculate A_delta matrix
         # 这段代码是计算 A_delta 矩阵，具体作用是对两个邻接矩阵 adj_distance 和 adj_demand 进行归一化处理，常用于图卷积网络（GCN）中的图的拉普拉斯矩阵的归一化。
-        deg = torch.sum(adj_distance, dim=0)
-        deg = torch.diag(deg)
-        deg_delta = torch.linalg.inv(torch.sqrt(deg))
-        a_delta = torch.matmul(torch.matmul(deg_delta, adj_distance), deg_delta)
+        # deg = torch.sum(adj_distance, dim=0)
+        # deg = torch.diag(deg)
+        # deg_delta = torch.linalg.inv(torch.sqrt(deg))
+        # a_delta = torch.matmul(torch.matmul(deg_delta, adj_distance), deg_delta)
+        a_delta = adj_distance
         self.A_dis = a_delta
 
+        # 功能相似图
         deg = torch.sum(adj_demand, dim=0)
         deg = torch.diag(deg)
         deg_delta = torch.linalg.inv(torch.sqrt(deg))
